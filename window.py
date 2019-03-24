@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, \
-    QGridLayout
+    QGridLayout, QLabel
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
@@ -52,14 +52,14 @@ class App(QDialog):
         scoreLayout = QGridLayout()
         scoreLayout.setContentsMargins(0, 0, 0, 0)
         scoreLayout.setSpacing(0)
-        score = QPushButton("no")
+        score = QLabel("no")
+        score.setStyleSheet("margin-right: 5px")
         image = QPushButton("image")
-        time = QPushButton("time")
+        time = QLabel("time")
         scoreLayout.addWidget(score, 0, 0)
         scoreLayout.addWidget(image, 0, 1)
         scoreLayout.addWidget(time, 0, 2)
         self.horizontalScoreGroupBox.setLayout(scoreLayout)
-
 
 
 if __name__ == '__main__':
