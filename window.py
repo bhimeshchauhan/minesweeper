@@ -19,18 +19,12 @@ class App(QDialog):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-
         self.scoreLayout()
         windowLayout = QVBoxLayout()
-        windowLayout.addWidget(self.horizontalGroupBox2)
-
+        windowLayout.addWidget(self.horizontalScoreGroupBox)
         self.createGridLayout()
         windowLayout.addWidget(self.horizontalGroupBox)
-        # self.setLayout(windowLayout)
-
-
         self.setLayout(windowLayout)
-
         self.show()
 
     def createGridLayout(self):
@@ -54,13 +48,17 @@ class App(QDialog):
         self.horizontalGroupBox.setLayout(layout)
 
     def scoreLayout(self):
-        self.horizontalGroupBox2 = QGroupBox()
-        layout2 = QGridLayout()
-        layout2.setContentsMargins(0, 0, 0, 0)
-        layout2.setSpacing(0)
-        button2 = QPushButton("no")
-        layout2.addWidget(button2, 0, 0)
-        self.horizontalGroupBox2.setLayout(layout2)
+        self.horizontalScoreGroupBox = QGroupBox()
+        scoreLayout = QGridLayout()
+        scoreLayout.setContentsMargins(0, 0, 0, 0)
+        scoreLayout.setSpacing(0)
+        score = QPushButton("no")
+        image = QPushButton("image")
+        time = QPushButton("time")
+        scoreLayout.addWidget(score, 0, 0)
+        scoreLayout.addWidget(image, 0, 1)
+        scoreLayout.addWidget(time, 0, 2)
+        self.horizontalScoreGroupBox.setLayout(scoreLayout)
 
 
 
