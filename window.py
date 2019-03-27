@@ -61,43 +61,7 @@ class App(QDialog):
         for i in range(index, len(nums)):
             self.dfs(nums, target - nums[i], i, path + [nums[i]], res, maxsize, width)
 
-    def recursionzero(self, xpos, ypos, layout):
-        width = len(self.mat[0])
-        height = len(self.mat)
-        # i-1
-        if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] != "*":
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.recursionzero(xpos-1, ypos, layout)
-        # i+1
-        if xpos + 1 < height and self.mat[xpos + 1][ypos] != "*":
-            layout.itemAtPosition(xpos+1, ypos).widget().setText(str(self.mat[xpos+1][ypos]))
-            self.recursionzero(xpos+1, ypos, layout)
-        # ypos+1
-        if ypos + 1 < width and self.mat[xpos][ypos + 1] != "*":
-            layout.itemAtPosition(xpos, ypos+1).widget().setText(str(self.mat[xpos][ypos+1]))
-            self.recursionzero(xpos, ypos+1, layout)
-        # ypos-1
-        if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] != "*":
-            layout.itemAtPosition(xpos, ypos-1).widget().setText(str(self.mat[xpos][ypos-1]))
-            self.recursionzero(xpos, ypos-1, layout)
-        # i-1 ypos-1
-        if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] != "*":
-            layout.itemAtPosition(xpos-1, ypos-1).widget().setText(str(self.mat[xpos-1][ypos-1]))
-            self.recursionzero(xpos-1, ypos-1, layout)
-        # i+1 ypos+1
-        if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] != "*":
-            layout.itemAtPosition(xpos+1, ypos+1).widget().setText(str(self.mat[xpos+1][ypos+1]))
-            self.recursionzero(xpos+1, ypos+1, layout)
-        # i-1 ypos+1xpos+1, ypos-1
-        if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] != "*":
-            layout.itemAtPosition(xpos-1, ypos+1).widget().setText(str(self.mat[xpos-1][ypos+1]))
-            self.recursionzero(xpos-1, ypos+1, layout)
-        # i+1 ypos-1
-        if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] != "*":
-            layout.itemAtPosition(xpos+1, ypos-1).widget().setText(str(self.mat[xpos+1][ypos-1]))
-            self.recursionzero(xpos+1, ypos-1, layout)
-
-    def replaceCount(self, xpos, ypos, layout):
+    def replaceCount(self, xpos, ypos):
         width = len(self.mat[0])
         height = len(self.mat)
         if self.mat[xpos][ypos] != '*' and (xpos, ypos) not in self.visited:
@@ -127,8 +91,6 @@ class App(QDialog):
                 self.mat[xpos][ypos] += 1
 
             self.visited.append((xpos, ypos))
-            if self.mat[xpos][ypos] == 0:
-                self.recursionzero(xpos, ypos, layout)
 
     def main(self, width, height, num):
         if num > height * width:
@@ -154,11 +116,11 @@ class App(QDialog):
             layout.itemAtPosition(item[0], item[1]).widget().setText(str(self.mat[item[0]][item[1]]))
         self.stop_timer()
 
-    def setval(self, x, y, btn, layout):
+    def setval(self, x, y, btn, layout,height):
         print(self.mines)
         if (x,y) in self.mines:
             self.reveal_mines(layout)
-        self.replaceCount(x, y, layout)
+        self.replaceCount(x, y)
         btn.setText(str(self.mat[x][y]))
 
     def initUI(self):
@@ -224,7 +186,7 @@ class App(QDialog):
         pixmap = QPixmap('./smiley.jpg')
         small = pixmap.scaled(32, 32)
         label.setPixmap(small)
-        label.setStyleSheet("color: red; margin-left: 70%; margin-right: 25%;")
+        label.setStyleSheet("color: red; margin-left: 10em;")
 
         self.time.display("00:00")
         self.time.setStyleSheet("background-color: black;")
