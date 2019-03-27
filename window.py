@@ -101,7 +101,7 @@ class App(QDialog):
     def createGridLayout(self):
         height = 4
         width = 4
-        maxbombs = 5
+        maxbombs = 16
         mat = self.main(width, height, maxbombs)
         self.horizontalGroupBox = QGroupBox()
         # self.horizontalGroupBox.setContentsMargins(0, 0, 0, 0)
@@ -123,6 +123,7 @@ class App(QDialog):
                                      "border-width: 2px; "
                                      "border-style: solid;"
                                      "border-color: black;"
+                                     "font-size: 50px;"
                                      "border-radius: 0;"
                                      "padding: 0px;"
                                      "margin: 0px")
@@ -147,17 +148,16 @@ class App(QDialog):
         pixmap = QPixmap('./smiley.jpg')
         small = pixmap.scaled(32, 32)
         label.setPixmap(small)
-        label.setStyleSheet("color: red;")
+        label.setStyleSheet("color: red; margin-left: 70%; margin-right: 25%;")
 
         time = QLCDNumber()
         time.display(int("009"))
-        time.setStyleSheet("margin-left: 25%;color: red;")
+        time.setStyleSheet("background-color: black;")
 
         scoreLayout.addWidget(score, 0, 0)
         scoreLayout.addWidget(label, 0, 1)
         scoreLayout.addWidget(time, 0, 2)
         self.horizontalScoreGroupBox.setLayout(scoreLayout)
-
 
 
 if __name__ == '__main__':
