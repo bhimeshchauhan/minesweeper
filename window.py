@@ -42,7 +42,7 @@ class App(QDialog):
         self.update_timer()
 
     def stop_timer(self):
-        self.timer.stop
+        self.timer.stop()
 
     def findsum(self, candidates, target, maxsize, width):
         res = []
@@ -114,6 +114,7 @@ class App(QDialog):
         print(self.mines, "are revieled")
         for item in self.mines:
             layout.itemAtPosition(item[0], item[1]).widget().setText(str(self.mat[item[0]][item[1]]))
+        self.stop_timer()
 
     def setval(self, x, y, btn, layout,height):
         print(self.mines)
