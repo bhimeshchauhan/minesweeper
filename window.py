@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, \
     QGridLayout, QLCDNumber, QLabel
 from PyQt5.QtGui import QIcon, QColor, QPixmap
-from PyQt5.QtCore import pyqtSlot, Qt
+from PyQt5.QtCore import pyqtSlot, Qt, QTimer
 from qtconsole.qt import QtGui
 from functools import partial
 import random
@@ -14,10 +14,31 @@ class App(QDialog):
         self.title = 'Minesweeper'
         self.left = 20
         self.top = 20
-        screen = QtGui.QDesktopWidget().screenGeometry()
         self.width = 625
         self.height = 625
+        self.time = QLCDNumber()
         self.initUI()
+
+    def start_timer(self):
+        # Initialize timer
+        self.timer = QTimer()
+        self.now = 0
+        # Update display and start timer
+        self.update_timer()
+        self.timer.timeout.connect(self.tick_timer)
+        self.timer.start(1000)  # Duration of one second = 1000 msec
+
+    def update_timer(self):
+        self.runtime = "%d:%02d" % (self.now / 60, self.now % 60)
+        self.time.display(self.runtime)
+        print(self.runtime)
+
+    def tick_timer(self):
+        self.now += 1
+        self.update_timer()
+
+    def stop_timer(self):
+        self.timer.stop
 
     def findsum(self, candidates, target, maxsize, width):
         res = []
@@ -96,12 +117,13 @@ class App(QDialog):
         self.createGridLayout()
         windowLayout.addWidget(self.horizontalGroupBox, 2)
         self.setLayout(windowLayout)
+        self.start_timer()
         self.show()
 
     def createGridLayout(self):
         height = 4
         width = 4
-        maxbombs = 16
+        maxbombs = 6
         mat = self.main(width, height, maxbombs)
         self.horizontalGroupBox = QGroupBox()
         # self.horizontalGroupBox.setContentsMargins(0, 0, 0, 0)
@@ -138,7 +160,7 @@ class App(QDialog):
         scoreLayout.setSpacing(0)
 
         score = QLCDNumber()
-        score.display(109)
+        score.display(000)
         score.setStyleSheet("background-color: black;")
 
         # icon = QtGui.QPixmap(QIcon('./smiley.jpg'))
@@ -150,13 +172,12 @@ class App(QDialog):
         label.setPixmap(small)
         label.setStyleSheet("color: red; margin-left: 70%; margin-right: 25%;")
 
-        time = QLCDNumber()
-        time.display(int("009"))
-        time.setStyleSheet("background-color: black;")
+        self.time.display("0:00")
+        self.time.setStyleSheet("background-color: black;")
 
         scoreLayout.addWidget(score, 0, 0)
         scoreLayout.addWidget(label, 0, 1)
-        scoreLayout.addWidget(time, 0, 2)
+        scoreLayout.addWidget(self.time, 0, 2)
         self.horizontalScoreGroupBox.setLayout(scoreLayout)
 
 
