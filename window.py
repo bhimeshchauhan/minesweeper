@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, \
-    QGridLayout, QLabel
-from PyQt5.QtGui import QIcon
+    QGridLayout, QLCDNumber, QLabel
+from PyQt5.QtGui import QIcon, QColor, QPixmap
 from PyQt5.QtCore import pyqtSlot
+from qtconsole.qt import QtGui
 
 
 class App(QDialog):
@@ -52,12 +53,25 @@ class App(QDialog):
         scoreLayout = QGridLayout()
         scoreLayout.setContentsMargins(0, 0, 0, 0)
         scoreLayout.setSpacing(0)
-        score = QLabel("no")
-        score.setStyleSheet("margin-right: 5px")
-        image = QPushButton("image")
-        time = QLabel("time")
+        score = QLCDNumber()
+        score.display(int("109"))
+
+        # score.setPalette()
+        score.setStyleSheet("margin-left: 25%; margin-right: 25%; color: red;")
+
+        # icon = QtGui.QPixmap(QIcon('./smiley.jpg'))
+        # image = QPushButton()
+        # image.setIcon(QIcon('./smiley.jpg'))
+        label = QLabel(self)
+        pixmap = QPixmap('./smiley.jpg')
+        smallerpix = pixmap.scaled(32, 32, Qt.KeepAspectRatio, Qt.FastTransformation)
+        label.setPixmap(smallerpix)
+
+        time = QLCDNumber()
+        time.display(int("009"))
+        time.setStyleSheet("margin-left: 25%; margin-right: 25%;")
         scoreLayout.addWidget(score, 0, 0)
-        scoreLayout.addWidget(image, 0, 1)
+        scoreLayout.addWidget(label, 0, 1)
         scoreLayout.addWidget(time, 0, 2)
         self.horizontalScoreGroupBox.setLayout(scoreLayout)
 
