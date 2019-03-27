@@ -19,6 +19,7 @@ class App(QDialog):
         self.time = QLCDNumber()
         self.initUI()
 
+
     def start_timer(self):
         # Initialize timer
         self.timer = QTimer()
@@ -106,7 +107,6 @@ class App(QDialog):
 
     def meme(self, name, btn):
         btn.setText(name)
-        print("awesome", name)
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -121,9 +121,10 @@ class App(QDialog):
         self.show()
 
     def createGridLayout(self):
-        height = 4
-        width = 4
-        maxbombs = 6
+        height = width = random.randint(5, 15)
+        # width = random.randint(5, 15)
+        maxbombs = random.randint(0, height * width)
+        print(height, width, maxbombs)
         mat = self.main(width, height, maxbombs)
         self.horizontalGroupBox = QGroupBox()
         # self.horizontalGroupBox.setContentsMargins(0, 0, 0, 0)
