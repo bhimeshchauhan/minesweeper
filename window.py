@@ -83,7 +83,8 @@ class App(QDialog):
             print(''.join(str(x) for x in item))
         return mat
 
-    def meme(self, name):
+    def meme(self, name, btn):
+        btn.setText(name)
         print("awesome", name)
 
     def initUI(self):
@@ -113,11 +114,11 @@ class App(QDialog):
         for x in range(height):
             for y in range(width):
                 # count += 1
-                button = QPushButton(str(mat[x][y]))
+                button = QPushButton()
                 button.setContentsMargins(0,0,0,0)
                 button.setFixedHeight(self.height // height)
                 button.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
-                button.clicked.connect(partial(self.meme, button.text()))
+                button.clicked.connect(partial(self.meme, str(mat[x][y]), button))
                 button.setStyleSheet(
                                      "border-width: 2px; "
                                      "border-style: solid;"
