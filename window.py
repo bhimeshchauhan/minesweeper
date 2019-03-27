@@ -110,30 +110,15 @@ class App(QDialog):
             print(''.join(str(x) for x in item))
         return buckets
 
-    def reveal_mines(self, layout, height):
+    def reveal_mines(self, layout):
         print(self.mines, "are revieled")
         for item in self.mines:
-            # layout.removeWidget(layout.itemAtPosition(item[0], item[1]).widget())
-
-            button = QPushButton(str(self.mat[item[0]][item[1]]))
-            button.setContentsMargins(0, 0, 0, 0)
-            button.setFixedHeight(self.height // height)
-            button.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
-            button.setStyleSheet(
-                "border-width: 2px; "
-                "border-style: solid;"
-                "border-color: black;"
-                "font-size: 50px;"
-                "border-radius: 0;"
-                "padding: 0px;"
-                "margin: 0px")
-            layout.addWidget(button, item[0], item[1])
-            # print(layout.itemAtPosition(item[0], item[1]).isEmpty())
+            layout.itemAtPosition(item[0], item[1]).widget().setText(str(self.mat[item[0]][item[1]]))
 
     def setval(self, x, y, btn, layout,height):
         print(self.mines)
         if (x,y) in self.mines:
-            self.reveal_mines(layout, height)
+            self.reveal_mines(layout)
         self.replaceCount(x, y)
         btn.setText(str(self.mat[x][y]))
 
@@ -170,7 +155,7 @@ class App(QDialog):
                 button.setContentsMargins(0,0,0,0)
                 button.setFixedHeight(self.height // height)
                 button.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
-                button.clicked.connect(partial(self.setval, x, y, button, layout, height))
+                button.clicked.connect(partial(self.setval, x, y, button, layout))
                 button.setStyleSheet(
                                      "border-width: 2px; "
                                      "border-style: solid;"
