@@ -16,6 +16,9 @@ class App(QDialog):
         self.top = 20
         self.width = 625
         self.height = 625
+        self.mat = []
+        self.visited = []
+        self.mines = []
         self.time = QLCDNumber()
         self.initUI()
 
@@ -32,7 +35,7 @@ class App(QDialog):
     def update_timer(self):
         self.runtime = "%d:%02d" % (self.now / 60, self.now % 60)
         self.time.display(self.runtime)
-        print(self.runtime)
+        # print(self.runtime)
 
     def tick_timer(self):
         self.now += 1
@@ -58,55 +61,81 @@ class App(QDialog):
         for i in range(index, len(nums)):
             self.dfs(nums, target - nums[i], i, path + [nums[i]], res, maxsize, width)
 
-    def replaceCount(self, matrix, width, height):
-        for i in range(len(matrix)):
-            for j in range(len(matrix[i])):
-                if matrix[i][j] != '*':
-                    # i-1
-                    if i - 1 >= 0 and matrix[i - 1][j] == "*":
-                        matrix[i][j] += 1
-                    # i+1
-                    if i + 1 < height and matrix[i + 1][j] == "*":
-                        matrix[i][j] += 1
-                    # j+1
-                    if j + 1 < width and matrix[i][j + 1] == "*":
-                        matrix[i][j] += 1
-                    # j-1
-                    if j - 1 >= 0 and matrix[i][j - 1] == "*":
-                        matrix[i][j] += 1
-                    # i-1 j-1
-                    if j - 1 >= 0 and i - 1 >= 0 and matrix[i - 1][j - 1] == "*":
-                        matrix[i][j] += 1
+    def replaceCount(self, xpos, ypos):
+        width = len(self.mat[0])
+        height = len(self.mat)
+        if self.mat[xpos][ypos] != '*' and (xpos, ypos) not in self.visited:
+            # i-1
+            if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] == "*":
+                self.mat[xpos][ypos] += 1
+            # i+1
+            if xpos + 1 < height and self.mat[xpos + 1][ypos] == "*":
+                self.mat[xpos][ypos] += 1
+            # ypos+1
+            if ypos + 1 < width and self.mat[xpos][ypos + 1] == "*":
+                self.mat[xpos][ypos] += 1
+            # ypos-1
+            if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] == "*":
+                self.mat[xpos][ypos] += 1
+            # i-1 ypos-1
+            if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] == "*":
+                self.mat[xpos][ypos] += 1
+            # i+1 ypos+1
+            if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] == "*":
+                self.mat[xpos][ypos] += 1
+            # i-1 ypos+1
+            if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] == "*":
+                self.mat[xpos][ypos] += 1
+            # i+1 ypos-1
+            if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == "*":
+                self.mat[xpos][ypos] += 1
 
-                    # i+1 j+1
-                    if j + 1 < width and i + 1 < height and matrix[i + 1][j + 1] == "*":
-                        matrix[i][j] += 1
-                    # i-1 j+1
-                    if j + 1 < width and i - 1 >= 0 and matrix[i - 1][j + 1] == "*":
-                        matrix[i][j] += 1
-                    # i+1 j-1
-                    if j - 1 >= 0 and i + 1 < height and matrix[i + 1][j - 1] == "*":
-                        matrix[i][j] += 1
-        return matrix
+            self.visited.append((xpos, ypos))
 
     def main(self, width, height, num):
         if num > height * width:
             print("Board exploded: Max mines reached")
             return
         buckets = [[0 for col in range(width)] for row in range(height)]
+        print(buckets)
         freq = list(self.findsum(list(range(1, 9)), num, height, width))
         # print("freq",freq)
         for i in range(len(freq)):
             changefor = random.sample(list(enumerate(buckets[i])), freq[i])
             for j in changefor:
+                self.mines.append((i, j[0]))
                 buckets[i][j[0]] = "*"
-        mat = self.replaceCount(buckets, width, height)
-        for item in mat:
+        # mat = self.replaceCount(buckets, width, height)
+        for item in buckets:
             print(''.join(str(x) for x in item))
-        return mat
+        return buckets
 
-    def meme(self, name, btn):
-        btn.setText(name)
+    def reveal_mines(self, layout, height):
+        print(self.mines, "are revieled")
+        for item in self.mines:
+            # layout.removeWidget(layout.itemAtPosition(item[0], item[1]).widget())
+
+            button = QPushButton(str(self.mat[item[0]][item[1]]))
+            button.setContentsMargins(0, 0, 0, 0)
+            button.setFixedHeight(self.height // height)
+            button.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
+            button.setStyleSheet(
+                "border-width: 2px; "
+                "border-style: solid;"
+                "border-color: black;"
+                "font-size: 50px;"
+                "border-radius: 0;"
+                "padding: 0px;"
+                "margin: 0px")
+            layout.addWidget(button, item[0], item[1])
+            # print(layout.itemAtPosition(item[0], item[1]).isEmpty())
+
+    def setval(self, x, y, btn, layout,height):
+        print(self.mines)
+        if (x,y) in self.mines:
+            self.reveal_mines(layout, height)
+        self.replaceCount(x, y)
+        btn.setText(str(self.mat[x][y]))
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -123,9 +152,9 @@ class App(QDialog):
     def createGridLayout(self):
         height = width = random.randint(5, 15)
         # width = random.randint(5, 15)
-        maxbombs = random.randint(0, height * width)
+        maxbombs = random.randint(0, 20)
         print(height, width, maxbombs)
-        mat = self.main(width, height, maxbombs)
+        self.mat = self.main(width, height, maxbombs)
         self.horizontalGroupBox = QGroupBox()
         # self.horizontalGroupBox.setContentsMargins(0, 0, 0, 0)
         layout = QGridLayout()
@@ -133,7 +162,7 @@ class App(QDialog):
         layout.setSpacing(0)
         # count = 0
         parentwidth = layout.geometry()
-        print( parentwidth, self.width)
+        print(parentwidth, self.width)
         for x in range(height):
             for y in range(width):
                 # count += 1
@@ -141,7 +170,7 @@ class App(QDialog):
                 button.setContentsMargins(0,0,0,0)
                 button.setFixedHeight(self.height // height)
                 button.setCursor(QtGui.QCursor(Qt.PointingHandCursor))
-                button.clicked.connect(partial(self.meme, str(mat[x][y]), button))
+                button.clicked.connect(partial(self.setval, x, y, button, layout, height))
                 button.setStyleSheet(
                                      "border-width: 2px; "
                                      "border-style: solid;"
