@@ -61,43 +61,47 @@ class App(QDialog):
         for i in range(index, len(nums)):
             self.dfs(nums, target - nums[i], i, path + [nums[i]], res, maxsize, width)
 
-    def replaceCount(self, xpos, ypos):
+    def replaceCount(self):
         width = len(self.mat[0])
         height = len(self.mat)
-        if self.mat[xpos][ypos] != '*' and (xpos, ypos) not in self.visited:
-            # i-1
-            if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] == "*":
-                self.mat[xpos][ypos] += 1
-            # i+1
-            if xpos + 1 < height and self.mat[xpos + 1][ypos] == "*":
-                self.mat[xpos][ypos] += 1
-            # ypos+1
-            if ypos + 1 < width and self.mat[xpos][ypos + 1] == "*":
-                self.mat[xpos][ypos] += 1
-            # ypos-1
-            if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] == "*":
-                self.mat[xpos][ypos] += 1
-            # i-1 ypos-1
-            if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] == "*":
-                self.mat[xpos][ypos] += 1
-            # i+1 ypos+1
-            if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] == "*":
-                self.mat[xpos][ypos] += 1
-            # i-1 ypos+1
-            if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] == "*":
-                self.mat[xpos][ypos] += 1
-            # i+1 ypos-1
-            if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == "*":
-                self.mat[xpos][ypos] += 1
+        for xpos in range(width):
+            for ypos in range(height):
+                if self.mat[xpos][ypos] != '*' and (xpos, ypos) not in self.visited:
+                    # i-1
+                    if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # i+1
+                    if xpos + 1 < height and self.mat[xpos + 1][ypos] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # ypos+1
+                    if ypos + 1 < width and self.mat[xpos][ypos + 1] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # ypos-1
+                    if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # i-1 ypos-1
+                    if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # i+1 ypos+1
+                    if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # i-1 ypos+1
+                    if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] == "*":
+                        self.mat[xpos][ypos] += 1
+                    # i+1 ypos-1
+                    if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == "*":
+                        self.mat[xpos][ypos] += 1
 
-            self.visited.append((xpos, ypos))
+                    # if self.mat[xpos][ypos] == 0:
+                    #     self.replaceCount(xpos, ypos, layout)
+                    self.visited.append((xpos, ypos))
 
     def main(self, width, height, num):
         if num > height * width:
             print("Board exploded: Max mines reached")
             return
         buckets = [[0 for col in range(width)] for row in range(height)]
-        print(buckets)
+        # print(buckets)
         freq = list(self.findsum(list(range(1, 9)), num, height, width))
         # print("freq",freq)
         for i in range(len(freq)):
@@ -111,16 +115,15 @@ class App(QDialog):
         return buckets
 
     def reveal_mines(self, layout):
-        print(self.mines, "are revieled")
+        # print(self.mines, "are revieled")
         for item in self.mines:
             layout.itemAtPosition(item[0], item[1]).widget().setText(str(self.mat[item[0]][item[1]]))
         self.stop_timer()
 
-    def setval(self, x, y, btn, layout,height):
-        print(self.mines)
+    def setval(self, x, y, btn, layout):
+        # print(self.mines)
         if (x,y) in self.mines:
             self.reveal_mines(layout)
-        self.replaceCount(x, y)
         btn.setText(str(self.mat[x][y]))
 
     def initUI(self):
@@ -133,12 +136,13 @@ class App(QDialog):
         windowLayout.addWidget(self.horizontalGroupBox, 2)
         self.setLayout(windowLayout)
         self.start_timer()
+        self.replaceCount()
         self.show()
 
     def createGridLayout(self):
-        height = width = random.randint(5, 15)
+        height = width = 5
         # width = random.randint(5, 15)
-        maxbombs = random.randint(0, 20)
+        maxbombs = 2
         print(height, width, maxbombs)
         self.mat = self.main(width, height, maxbombs)
         self.horizontalGroupBox = QGroupBox()
