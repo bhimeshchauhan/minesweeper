@@ -64,37 +64,29 @@ class App(QDialog):
     def replacezero(self, xpos, ypos, layout):
         width = len(self.mat[0])
         height = len(self.mat)
-        if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] == 0:
+        if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] != "*":
             layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
         # i+1
-        if xpos + 1 < height and self.mat[xpos + 1][ypos] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if xpos + 1 < height and self.mat[xpos + 1][ypos] != "*":
+            layout.itemAtPosition(xpos+1, ypos).widget().setText(str(self.mat[xpos+1][ypos]))
         # ypos+1
-        if ypos + 1 < width and self.mat[xpos][ypos + 1] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if ypos + 1 < width and self.mat[xpos][ypos + 1] != "*":
+            layout.itemAtPosition(xpos, ypos+1).widget().setText(str(self.mat[xpos][ypos+1]))
         # ypos-1
-        if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] != "*":
+            layout.itemAtPosition(xpos, ypos-1).widget().setText(str(self.mat[xpos][ypos-1]))
         # i-1 ypos-1
-        if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] != "*":
+            layout.itemAtPosition(xpos-1, ypos-1).widget().setText(str(self.mat[xpos-1][ypos-1]))
         # i+1 ypos+1
-        if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] != "*":
+            layout.itemAtPosition(xpos+1, ypos+1).widget().setText(str(self.mat[xpos+1][ypos+1]))
         # i-1 ypos+1
-        if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] != "*":
+            layout.itemAtPosition(xpos-1, ypos+1).widget().setText(str(self.mat[xpos-1][ypos+1]))
         # i+1 ypos-1
-        if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == 0:
-            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
-            self.mat[xpos][ypos] += 1
+        if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] != "*":
+            layout.itemAtPosition(xpos+1, ypos-1).widget().setText(str(self.mat[xpos+1][ypos-1]))
 
     def replaceCount(self, layout):
         width = len(self.mat[0])
@@ -126,9 +118,6 @@ class App(QDialog):
                     # i+1 ypos-1
                     if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == "*":
                         self.mat[xpos][ypos] += 1
-
-                    if self.mat[xpos][ypos] == 0:
-                        self.replacezero(xpos, ypos, layout)
                     self.visited.append((xpos, ypos))
 
     def main(self, width, height, num):
@@ -157,6 +146,8 @@ class App(QDialog):
 
     def setval(self, x, y, btn, layout):
         # print(self.mines)
+        if self.mat[x][y] == 0:
+            self.replacezero(x, y, layout)
         if (x,y) in self.mines:
             self.reveal_mines(layout)
         btn.setText(str(self.mat[x][y]))
