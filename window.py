@@ -61,7 +61,42 @@ class App(QDialog):
         for i in range(index, len(nums)):
             self.dfs(nums, target - nums[i], i, path + [nums[i]], res, maxsize, width)
 
-    def replaceCount(self):
+    def replacezero(self, xpos, ypos, layout):
+        width = len(self.mat[0])
+        height = len(self.mat)
+        if xpos - 1 >= 0 and self.mat[xpos - 1][ypos] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # i+1
+        if xpos + 1 < height and self.mat[xpos + 1][ypos] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # ypos+1
+        if ypos + 1 < width and self.mat[xpos][ypos + 1] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # ypos-1
+        if ypos - 1 >= 0 and self.mat[xpos][ypos - 1] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # i-1 ypos-1
+        if ypos - 1 >= 0 and xpos - 1 >= 0 and self.mat[xpos - 1][ypos - 1] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # i+1 ypos+1
+        if ypos + 1 < width and xpos + 1 < height and self.mat[xpos + 1][ypos + 1] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # i-1 ypos+1
+        if ypos + 1 < width and xpos - 1 >= 0 and self.mat[xpos - 1][ypos + 1] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+        # i+1 ypos-1
+        if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == 0:
+            layout.itemAtPosition(xpos-1, ypos).widget().setText(str(self.mat[xpos-1][ypos]))
+            self.mat[xpos][ypos] += 1
+
+    def replaceCount(self, layout):
         width = len(self.mat[0])
         height = len(self.mat)
         for xpos in range(width):
@@ -92,8 +127,8 @@ class App(QDialog):
                     if ypos - 1 >= 0 and xpos + 1 < height and self.mat[xpos + 1][ypos - 1] == "*":
                         self.mat[xpos][ypos] += 1
 
-                    # if self.mat[xpos][ypos] == 0:
-                    #     self.replaceCount(xpos, ypos, layout)
+                    if self.mat[xpos][ypos] == 0:
+                        self.replacezero(xpos, ypos, layout)
                     self.visited.append((xpos, ypos))
 
     def main(self, width, height, num):
@@ -136,7 +171,6 @@ class App(QDialog):
         windowLayout.addWidget(self.horizontalGroupBox, 2)
         self.setLayout(windowLayout)
         self.start_timer()
-        self.replaceCount()
         self.show()
 
     def createGridLayout(self):
@@ -170,6 +204,7 @@ class App(QDialog):
                                      "padding: 0px;"
                                      "margin: 0px")
                 layout.addWidget(button, x, y)
+        self.replaceCount(layout)
         self.horizontalGroupBox.setLayout(layout)
 
     def scoreLayout(self):
